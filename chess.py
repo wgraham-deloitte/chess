@@ -1,37 +1,15 @@
 from tkinter import Tk, Canvas, Frame, BOTH
 from PIL import Image, ImageTk
 import os
-from setupBoard import makeBoard, placePieces 
+from setupBoard import loadPieces, makeBoard, placePieces 
 
 class Board(Frame):
 
     def __init__(self):
         
         super().__init__()
-        self.pieces = self.loadPieces()
+        self.pieces = loadPieces()
         self.initUI()
-
-    def loadPieces(self):
-        
-        paths = []
-        dir = "./ChessPieces"
-        for path in os.listdir(dir):
-            paths.append(dir + "/" + path)
-
-        paths.sort()
-
-        black_pieces = []
-        white_pieces = []
-
-        for piece in paths:
-            img = Image.open(piece)
-            img = ImageTk.PhotoImage(img.resize((64, 64)))
-            if "b_" in piece:
-                black_pieces.append(img)
-                continue
-            white_pieces.append(img)
-
-        return [white_pieces, black_pieces]
 
     def initUI(self):
 

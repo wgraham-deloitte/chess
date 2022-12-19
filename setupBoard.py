@@ -31,6 +31,28 @@ def makeBoard(canvas: Canvas) -> Canvas:
                                     fill=c, outline="black")
     return canvas
 
+def loadPieces():
+        
+        paths = []
+        dir = "./ChessPieces"
+        for path in os.listdir(dir):
+            paths.append(dir + "/" + path)
+
+        paths.sort()
+
+        black_pieces = []
+        white_pieces = []
+
+        for piece in paths:
+            img = Image.open(piece)
+            img = ImageTk.PhotoImage(img.resize((64, 64)))
+            if "b_" in piece:
+                black_pieces.append(img)
+                continue
+            white_pieces.append(img)
+
+        return [white_pieces, black_pieces]
+
 def placePieces(canvas: Canvas, pieces) -> Canvas:
     
     ORDER = [ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK]
