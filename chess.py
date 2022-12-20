@@ -1,14 +1,30 @@
 from tkinter import Tk, Canvas, Frame, BOTH
-from PIL import Image, ImageTk
-import os
-from setupBoard import loadPieces, makeBoard, placePieces 
+import setupBoard
+from loadImages import loadBoard, loadPieces
+
+START_POS = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+# Gonna have to have some sort of system where:
+
+#   if(mouseOverPiece):
+#       legalMoves = calculateLegalMoves(piece, FEN)
+#       applyHighlight(legalMoves)
+# 
+#   def calculateLegalMoves(piece, FEN):
+# 
+#       pieceRules = {rook: rules,
+#                     knight: rules,
+#                     etc: etc}
+#
+#       blockedMoves = calcBlockedMoves()
 
 class Board(Frame):
 
     def __init__(self):
         
         super().__init__()
-        self.pieces = loadPieces()
+        self.board = loadBoard()
+        self.pieceImages = loadPieces()
         self.initUI()
 
     def initUI(self):
@@ -19,8 +35,9 @@ class Board(Frame):
         canvas = Canvas(self, bg="black", height=645, width=645)
         canvas.pack()
 
-        canvas = makeBoard(canvas)
-        canvas = placePieces(canvas, self.pieces)
+        canvas.create_image(5, 5, image=self.board, anchor="nw")
+
+        canvas = setupBoard.read(START_POS, canvas, self.pieceImages)
 
 def main():
 

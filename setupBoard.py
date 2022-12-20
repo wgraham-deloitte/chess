@@ -1,68 +1,52 @@
-from tkinter import Tk, Canvas, Frame, BOTH
-from PIL import Image, ImageTk
-import os
+from tkinter import Canvas
 
-GRIDSPACING = 80
-BOARD_OFFSET = 5
-PIECE_OFFSET = 13
+X_GRID = 67.5
+Y_GRID = 66
+X_OFFSET = 62
+Y_OFFSET = 67
 
 WHITE, BLACK = 0, 1
 BISHOP, KING, KNIGHT, PAWN, QUEEN, ROOK = 0, 1, 2, 3, 4, 5
 
-def makeBoard(canvas: Canvas) -> Canvas:
+pieceChars = {  "r": [BLACK, ROOK],
+                "n": [BLACK, KNIGHT],
+                "b": [BLACK, BISHOP],
+                "q": [BLACK, QUEEN],
+                "k": [BLACK, KING],
+                "p": [BLACK, PAWN],
+                "P": [WHITE, PAWN],
+                "R": [WHITE, ROOK],
+                "N": [WHITE, KNIGHT],
+                "B": [WHITE, BISHOP],
+                "Q": [WHITE, QUEEN],
+                "K": [WHITE, KING]
+             }
 
-    darkSquare = True
-    for row in range(8):
+def read(FEN: str, canvas: Canvas, pieceImages) -> Canvas:
 
-        darkSquare = not darkSquare
-        for column in range(8):
-            
-            c = "white"
-            if darkSquare:
+    #layout, turn, castling, enPassent, halfmoves, fullmoves
+    layout = FEN.split()[0]
+    row, col = 0, 0
 
-                c = "BlanchedAlmond"
+    for letter in layout:
 
-            darkSquare = not darkSquare
-                    
-            canvas.create_polygon(  row*GRIDSPACING + BOARD_OFFSET, column*GRIDSPACING + BOARD_OFFSET, 
-                                    (row+1)*GRIDSPACING + BOARD_OFFSET, column*GRIDSPACING + BOARD_OFFSET,
-                                    (row+1)*GRIDSPACING + BOARD_OFFSET, (column+1)*GRIDSPACING + BOARD_OFFSET, 
-                                    row*GRIDSPACING + BOARD_OFFSET, (column+1)*GRIDSPACING + BOARD_OFFSET,
-                                    fill=c, outline="black")
-    return canvas
+        if(letter in pieceChars.keys()):
+            canvas = placePiece(pieceChars[letter], row, col, canvas, pieceImages)
+            row += 1
+            continue
 
-def loadPieces():
-        
-        paths = []
-        dir = "./ChessPieces"
-        for path in os.listdir(dir):
-            paths.append(dir + "/" + path)
+        if(letter == "/"):
+            col += 1
+            row = 0
+            continue
 
-        paths.sort()
-
-        black_pieces = []
-        white_pieces = []
-
-        for piece in paths:
-            img = Image.open(piece)
-            img = ImageTk.PhotoImage(img.resize((64, 64)))
-            if "b_" in piece:
-                black_pieces.append(img)
-                continue
-            white_pieces.append(img)
-
-        return [white_pieces, black_pieces]
-
-def placePieces(canvas: Canvas, pieces) -> Canvas:
+        for i in range(int(letter)):
+            row += 1
     
-    ORDER = [ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK]
+    return canvas
+        
+def placePiece(pieceIdx, row: int, col: int, canvas: Canvas, pieceImages) -> Canvas:
 
-    for i in range(8):
-        #back row
-        canvas.create_image(i*GRIDSPACING + PIECE_OFFSET, 7*GRIDSPACING + PIECE_OFFSET, image=pieces[WHITE][ORDER[i]], anchor="nw")
-        canvas.create_image(i*GRIDSPACING + PIECE_OFFSET, 0*GRIDSPACING + PIECE_OFFSET, image=pieces[BLACK][ORDER[i]], anchor="nw")
-        #pawns
-        canvas.create_image(i*GRIDSPACING + PIECE_OFFSET, 6*GRIDSPACING + PIECE_OFFSET, image=pieces[WHITE][PAWN], anchor="nw")
-        canvas.create_image(i*GRIDSPACING + PIECE_OFFSET, 1*GRIDSPACING + PIECE_OFFSET, image=pieces[BLACK][PAWN], anchor="nw")
+    canvas.create_image(row*X_GRID + X_OFFSET, col*Y_GRID + Y_OFFSET, image=pieceImages[pieceIdx[0]][pieceIdx[1]], anchor="nw")
 
     return canvas
