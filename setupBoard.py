@@ -1,9 +1,10 @@
 from tkinter import Canvas
 
-X_GRID = 67.5
-Y_GRID = 66
-X_OFFSET = 62
-Y_OFFSET = 67
+X_GRID = 77
+Y_GRID = 73
+
+X_OFFSET = 105
+Y_OFFSET = 68
 
 WHITE, BLACK = 0, 1
 BISHOP, KING, KNIGHT, PAWN, QUEEN, ROOK = 0, 1, 2, 3, 4, 5
