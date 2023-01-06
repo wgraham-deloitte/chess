@@ -1,10 +1,8 @@
 from tkinter import Canvas
 
-X_GRID = 77
-Y_GRID = 73
-
-X_OFFSET = 105
-Y_OFFSET = 68
+GRID_SPACING = 80
+OFFSET = 5 
+PIECE_OFFSET = OFFSET + (GRID_SPACING // 2)
 
 WHITE, BLACK = 0, 1
 BISHOP, KING, KNIGHT, PAWN, QUEEN, ROOK = 0, 1, 2, 3, 4, 5
@@ -48,6 +46,6 @@ def read(FEN: str, canvas: Canvas, pieceImages) -> Canvas:
         
 def placePiece(pieceIdx, row: int, col: int, canvas: Canvas, pieceImages) -> Canvas:
 
-    canvas.create_image(row*X_GRID + X_OFFSET, col*Y_GRID + Y_OFFSET, image=pieceImages[pieceIdx[0]][pieceIdx[1]], anchor="nw")
+    canvas.create_image(row*GRID_SPACING + PIECE_OFFSET, col*GRID_SPACING + PIECE_OFFSET, image=pieceImages[pieceIdx[0]][pieceIdx[1]], anchor="center")
 
     return canvas

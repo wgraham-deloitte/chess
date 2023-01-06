@@ -1,4 +1,6 @@
-from setupBoard import X_GRID, Y_GRID, X_OFFSET, Y_OFFSET
+
+GRID_SPACING = 80
+OFFSET = 5
 
 rookRule = []
 bishopRule = []
@@ -61,7 +63,7 @@ def highlightMoves(moves, x, y):
 
     for i in range(len(moves)):
         
-        x0, y0 = ((x + moves[i][0])*X_GRID) + X_OFFSET + 15, ((y + moves[i][1])*Y_GRID) + Y_OFFSET + 10
+        x0, y0 = ((x + moves[i][0])*GRID_SPACING) + GRID_SPACING/2, ((y + moves[i][1])*GRID_SPACING) + GRID_SPACING/2
         x1, y1 = x0 + 10, y0 + 10
         highlights.append((x0, y0, x1, y1))
     

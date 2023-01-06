@@ -1,13 +1,14 @@
 from tkinter import Tk, Canvas, Frame, BOTH
 import setupBoard
-from setupBoard import X_OFFSET, Y_OFFSET, X_GRID, Y_GRID
-from loadImages import loadBoard, loadPieces
+from loadImages import loadPieces
 from calculateLegalMoves import getLegalMoves, highlightMoves
 
 START_POS = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-CANVAS_WIDTH = 750
-CANVAS_HEIGHT = 750
+GRID_SPACING = 80
+OFFSET = 5
+CANVAS_WIDTH = (8 * GRID_SPACING) + 2 * OFFSET
+CANVAS_HEIGHT = (8 * GRID_SPACING) + 2 * OFFSET
 
 class Board(Frame):
 
@@ -23,7 +24,6 @@ class Board(Frame):
 
     def initUI(self):
 
-        self.boardImage = loadBoard(CANVAS_HEIGHT, CANVAS_WIDTH)
         self.pieceImages = loadPieces()
 
         self.master.title("Chess")
@@ -32,15 +32,32 @@ class Board(Frame):
         self.canvas = Canvas(self, bg="white", height=CANVAS_HEIGHT, width=CANVAS_WIDTH)
         self.canvas.pack()                   
 
-        self.board = self.canvas.create_image(0, 0, image=self.boardImage, anchor="nw")
+        self.board = []
+        colour = "white"
+        
+        for i in range(64):
+            
+            x0 = ((i % 8) * GRID_SPACING) + OFFSET
+            y0 = ((i // 8) * GRID_SPACING) + OFFSET
+            x1 = (((i % 8)+1) * GRID_SPACING) + OFFSET
+            y1 = (((i // 8)+1) * GRID_SPACING) + OFFSET
+
+            if i % 8 != 0:
+                if colour == "tan":
+                    colour = "white"
+                else:
+                    colour = "tan"
+
+            self.board.append(self.canvas.create_rectangle(x0, y0, x1, y1, fill=colour, outline="black"))
+
         self.canvas = setupBoard.read(self.FEN, self.canvas, self.pieceImages)
 
     def showLegalMoves(self, event):
 
         x, y = self.getMousePos(event)
         
-        x = int((x - X_OFFSET) // X_GRID)
-        y = int((y - Y_OFFSET) // Y_GRID)
+        x = int((x - OFFSET) // GRID_SPACING)
+        y = int((y - OFFSET) // GRID_SPACING)
 
         if self.mouseX != x or self.mouseY != y:
             for i in self.geo:
@@ -87,7 +104,7 @@ class Board(Frame):
 def main():
 
     root = Tk()
-    root.geometry(str(CANVAS_WIDTH + 10) + "x" + str(CANVAS_HEIGHT + 10) + "+100+100")
+    root.geometry(str(CANVAS_WIDTH) + "x" + str(CANVAS_HEIGHT) + "+100+100")
     board = Board()
     root.bind('<Motion>', board.showLegalMoves)
     root.bind('<Button-1>', board.getClickPos)

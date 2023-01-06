@@ -23,10 +23,3 @@ def loadPieces():
         white_pieces.append(img)
 
     return [white_pieces, black_pieces]
-
-def loadBoard(CANVAS_WIDTH, CANVAS_HEIGHT):
-
-    board = Image.open("chessboard-with-letters-and-numbers-vector-1071722 2.jpeg")
-    board = ImageTk.PhotoImage(board.resize((CANVAS_WIDTH, CANVAS_HEIGHT)))
-
-    return board
